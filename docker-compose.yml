@@ -1,0 +1,11 @@
+services:
+  get5-web:
+    image: get5-web
+    build:
+      context: "."
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:80"
+
+  mongo:
+    image: mongo
