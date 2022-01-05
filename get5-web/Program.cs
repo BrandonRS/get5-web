@@ -1,4 +1,16 @@
+using MongoDB.Bson;
+using MongoDB.Driver;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Grab host and port
+var host = builder.Configuration.GetSection("MongoDb:Host").Value;
+var port = builder.Configuration.GetSection("MongoDb:Port").Value;
+
+// Create the connection string using the host and port values
+var mongoClient = new MongoClient($"mongodb://{host}:{port}");
+var database = mongoClient.GetDatabase("get5");
+builder.Services.AddSingleton(database);
 
 // Add services to the container.
 
