@@ -2,14 +2,26 @@ using AspNetCore.Authentication.CAS;
 using AspNetCore.Identity.Mongo;
 using AspNetCore.Identity.Mongo.Model;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Grab host and port
+var host = builder.Configuration.GetSection("MongoDb:Host").Value;
+var port = builder.Configuration.GetSection("MongoDb:Port").Value;
+var mongoConnectionString = $"mongodb://{host}:{port}";
+
+// Create the connection string using the host and port values
+var mongoClient = new MongoClient(mongoConnectionString);
+var database = mongoClient.GetDatabase("get5");
+builder.Services.AddSingleton(database);
 
 // Add services to the container.
 
 builder.Services.AddIdentityMongoDbProvider<MongoUser>(mongo =>
 {
-    mongo.ConnectionString = "mongodb://127.0.0.1:27017";
+    mongo.ConnectionString = mongoConnectionString;
 });
 
 builder.Services
