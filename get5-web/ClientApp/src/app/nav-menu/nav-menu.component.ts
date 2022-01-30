@@ -1,14 +1,4 @@
-import { Component, NgModule } from '@angular/core';
-import {MatButtonModule} from '@angular/material/button';
-
-const MaterialComponents = [
-  MatButtonModule
-];
- @NgModule({
-   imports: [MaterialComponents],
-   exports: [MaterialComponents]
- })
- export class MaterialModule { }
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-nav-menu',
@@ -19,7 +9,7 @@ export class NavMenuComponent {
   isExpanded = false;
 
   umdLogin() {
-
+    window.location.href = "/api/auth/umd"
   }
 
   collapse() {
