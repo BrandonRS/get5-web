@@ -1,4 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
+import {MatButtonModule} from '@angular/material/button';
+
+const MaterialComponents = [
+  MatButtonModule
+];
+ @NgModule({
+   imports: [MaterialComponents],
+   exports: [MaterialComponents]
+ })
+ export class MaterialModule { }
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,6 +17,10 @@ import { Component } from '@angular/core';
 })
 export class NavMenuComponent {
   isExpanded = false;
+
+  umdLogin() {
+
+  }
 
   collapse() {
     this.isExpanded = false;
