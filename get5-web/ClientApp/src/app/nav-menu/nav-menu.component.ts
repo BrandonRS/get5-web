@@ -9,7 +9,7 @@ export class NavMenuComponent {
   isExpanded = false;
 
   umdLogin() {
-    window.location.href = "/api/auth/umd"
+    window.location.href = "/api/auth/umd";
   }
 
   collapse() {
