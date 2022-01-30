@@ -8,6 +8,10 @@ import { Component } from '@angular/core';
 export class NavMenuComponent {
   isExpanded = false;
 
+  umdLogin() {
+    window.location.href = "/api/auth/umd";
+  }
+
   collapse() {
     this.isExpanded = false;
   }
