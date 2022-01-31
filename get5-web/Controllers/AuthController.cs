@@ -1,6 +1,7 @@
 ﻿using AspNetCore.Authentication.CAS;
 using get5_web.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,10 +76,10 @@ namespace get5_web.Controllers
         }
 
         [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> GetUserName()
+        [HttpGet("username")]
+        public IActionResult GetUserName()
         {
-            var name = await _userManager.GetUserNameAsync();
+            var name = _signInManager.Context.User?.Identity?.Name;
             if(name == null)
             {
                 return NotFound();
@@ -87,12 +88,11 @@ namespace get5_web.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("userInfo")]
         public async Task<IActionResult> GetUserInfo()
         {
             
-            var user = _signInManager.Context.User;
-            var info = await _userManager.GetUserAsync(user);
+            var info = await _userManager.GetUserAsync(User);
             if (info == null) { return NotFound(); }
             return Ok(info);
 
