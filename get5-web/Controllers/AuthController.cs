@@ -73,5 +73,29 @@ namespace get5_web.Controllers
             await _signInManager.SignOutAsync();
             return LocalRedirect("~/");
         }
+
+        [Authorize]
+        [HttpGet("username")]
+        public IActionResult GetUserName()
+        {
+            var name = _signInManager.Context.User?.Identity?.Name;
+            if(name == null)
+            {
+                return NotFound();
+            }
+            return Ok(name);
+        }
+
+        [Authorize]
+        [HttpGet("userInfo")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            
+            var info = await _userManager.GetUserAsync(User);
+            if (info == null) { return NotFound(); }
+            return Ok(info);
+
+        }
+
     }
 }
