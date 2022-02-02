@@ -3,6 +3,9 @@ using get5_web.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Web;
 
 namespace get5_web.Controllers
 {
@@ -19,6 +22,26 @@ namespace get5_web.Controllers
             _logger = logger;
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
+        }
+
+        [HttpGet("~/steamlogin")]
+        public IActionResult SteamLogin()
+        {
+
+            return Challenge(new AuthenticationProperties { RedirectUri = "/" }, "Steam");
+        }
+
+        
+
+
+
+
+        [HttpPost("~/steamLogout")]
+        public async Task<IActionResult> SteamSignOut()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme, new AuthenticationProperties { RedirectUri = "/"});
+
+            return Redirect("/");
         }
 
         [HttpGet("umd")]

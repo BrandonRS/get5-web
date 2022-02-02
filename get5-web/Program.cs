@@ -45,6 +45,10 @@ builder.Services
         };
     });
 
+builder.Services
+    .AddAuthentication()
+    .AddSteam();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
