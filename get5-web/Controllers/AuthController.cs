@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Web;
 
 namespace get5_web.Controllers
 {
@@ -13,6 +11,8 @@ namespace get5_web.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private const string SteamScheme = "Steam";
+
         private readonly ILogger<AuthController> _logger;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
@@ -24,24 +24,38 @@ namespace get5_web.Controllers
             _userManager = signInManager.UserManager;
         }
 
-        [HttpGet("~/steamlogin")]
-        public IActionResult SteamLogin()
+        [HttpGet("steam")]
+        public IActionResult SteamLogin([FromQuery] string? returnUrl)
         {
-
-            return Challenge(new AuthenticationProperties { RedirectUri = "/" }, "Steam");
+            returnUrl = Url.Action(nameof(SteamLoginCallback), "Auth", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(SteamScheme, returnUrl);
+            return Challenge(properties, SteamScheme);
         }
 
-        
-
-
-
-
-        [HttpPost("~/steamLogout")]
-        public async Task<IActionResult> SteamSignOut()
+        [Authorize(AuthenticationSchemes = SteamScheme)]
+        [HttpGet("steam/callback")]
+        public async Task<IActionResult> SteamLoginCallback([FromQuery] string? returnUrl)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme, new AuthenticationProperties { RedirectUri = "/"});
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return RedirectToAction(nameof(SteamLogin));
+            }
 
-            return Redirect("/");
+            IdentityResult result;
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            if (signInResult.Succeeded)
+                return LocalRedirect(returnUrl ?? Url.Content("~/"));
+            else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
+            {
+                // Prompt user to link UMD account, or login as guest
+            }
+            else
+            {
+                return BadRequest("User is not allowed to sign in.");
+            }
+
+            return BadRequest(/*result.Errors.FirstOrDefault()*/);
         }
 
         [HttpGet("umd")]

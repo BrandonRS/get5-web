@@ -43,11 +43,12 @@ builder.Services
             // SecurePolicy = CookieSecurePolicy.SameAsRequest,
             Expiration = TimeSpan.FromMinutes(10)
         };
+    })
+    .AddSteam("Steam", steamOptions =>
+    {
+        steamOptions.CallbackPath = "/api/auth/signin-steam";
+        steamOptions.SignInScheme = IdentityConstants.ExternalScheme;
     });
-
-builder.Services
-    .AddAuthentication()
-    .AddSteam();
 
 builder.Services.AddControllersWithViews();
 
