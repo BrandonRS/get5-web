@@ -26,7 +26,7 @@ namespace get5_web.Controllers
         [HttpGet("steam")]
         public IActionResult SteamLogin([FromQuery] string? returnUrl)
         {
-            returnUrl = Url.Action(nameof(SteamLoginCallback), "Auth", new { returnUrl });
+            returnUrl = Url.Action(nameof(SteamLoginCallback), "auth", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(SteamScheme, returnUrl);
             return Challenge(properties, SteamScheme);
         }
@@ -60,7 +60,7 @@ namespace get5_web.Controllers
         [HttpGet("umd")]
         public IActionResult UmdLogin([FromQuery] string? returnUrl)
         {
-            returnUrl = Url.Action(nameof(UmdLoginCallback), "Auth", new { returnUrl });
+            returnUrl = Url.Action(nameof(UmdLoginCallback), "auth", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(
                 CasDefaults.AuthenticationScheme.SCHEME, returnUrl);
             return Challenge(properties, CasDefaults.AuthenticationScheme.SCHEME);
