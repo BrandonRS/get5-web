@@ -1,7 +1,6 @@
 using AspNetCore.Authentication.CAS;
 using AspNetCore.Identity.Mongo;
 using get5_web.Models.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 

@@ -3,7 +3,6 @@ using get5_web.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication;
 
 namespace get5_web.Controllers
 {
@@ -116,7 +115,7 @@ namespace get5_web.Controllers
         public IActionResult GetUserName()
         {
             var name = _signInManager.Context.User?.Identity?.Name;
-            if(name == null)
+            if (name == null)
             {
                 return NotFound();
             }
@@ -127,12 +126,9 @@ namespace get5_web.Controllers
         [HttpGet("userInfo")]
         public async Task<IActionResult> GetUserInfo()
         {
-            
             var info = await _userManager.GetUserAsync(User);
             if (info == null) { return NotFound(); }
             return Ok(info);
-
         }
-
     }
 }
