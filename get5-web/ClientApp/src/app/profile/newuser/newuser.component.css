@@ -1,0 +1,16 @@
+
+
+.btn-primary {
+    width: 400px;
+    height: 40px;
+    color: #ffffff;
+    background-color: rgb(233, 12, 12);
+    border: #ffffff;
+    margin:auto;
+}
+
+.btn-default{
+  width: 400px;
+    height: 40px;
+    margin:auto;
+}
