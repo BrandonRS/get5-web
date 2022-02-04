@@ -6,4 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./newuser.component.css']
 })
 export class ProfileNewuserComponent {
+
+  umdRedirect() {
+    window.location.href = "/api/auth/umd";
+  }
+
+  guestRedirect(){
+    window.location.href = "/";
+  }
 }

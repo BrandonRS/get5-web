@@ -14,8 +14,10 @@
     <div class=" d-flex flex-column min-vh-100 justify-content-center align-items-center">
         <div class="btn-toolbar">
             <p>
-                <button type="button" class="btn btn-primary btn-lg ">UMD Login</button>
-                <button type="button" class="btn btn-default btn-lg"> Login as Guest</button>
+                <button type="button" class="btn btn-primary btn-lg " (click)="umdRedirect()"
+                id="umdRedirect">UMD Login</button>
+                <button type="button" class="btn btn-default btn-lg" (click)="guestRedirect()"
+                id="guestRedirect"> Login as Guest</button>
             </p>
         </div>
     </div>

@@ -48,6 +48,7 @@ namespace get5_web.Controllers
             else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
             {
                 // Prompt user to link UMD account, or login as guest
+                return LocalRedirect("~/profile/newuser");
             }
             else
             {
