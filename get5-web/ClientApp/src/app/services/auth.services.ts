@@ -1,26 +1,38 @@
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
+@Injectable({
+    providedIn: 'root',
+   })
 export class AuthService{
+
+    private auth_url : string = "/api/auth/";
 
     constructor(private httpClient : HttpClient){}
 
     getUser(){
         
-        return this.httpClient.get("username");
+        this.httpClient.get(this.auth_url + "username", {responseType: 'text'}).subscribe(response => {
+            
+            console.log(response);
+        });
     }
 
     getUserInfo(){
 
-        return this.httpClient.get("userInfo");
+        this.httpClient.get(this.auth_url + "userInfo", {responseType: 'json'}).subscribe(response=> {
+            
+            console.log(response);
+        });;
     }
 
     logout(){
 
-        this.httpClient.get("logout");
+        this.httpClient.get(this.auth_url +  "logout").subscribe(response => {});
     }
 
     isSignedIn(){
 
-        return this.httpClient.get("username") != "";
+        //return this.httpClient.get(this.auth_url + "username").subscribe() != "";
     }
 }
