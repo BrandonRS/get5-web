@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 import { UserInfo } from "./user_info";
 
 @Injectable({
@@ -11,24 +12,18 @@ export class AuthService{
 
     constructor(private httpClient : HttpClient){}
 
-    getUser(){
+    getUser(): Observable<string>{
         
-        this.httpClient.get(this.auth_url + "username", {responseType: 'text'}).subscribe(response => {
-
-          //response is already string
-          return response;
-        });
+        return this.httpClient.get(this.auth_url + "username", {responseType: 'text'});
     }
 
-    getUserInfo(){
-
-        this.httpClient.get(this.auth_url + "userInfo", {responseType: 'json'}).subscribe(response=> {
+    /* Example extraction of data: .subscribe(response=> {
 
 
-          let info: UserInfo = { username: Object.values(Object.values(response)[5]).toString().split(",").join("") } as UserInfo;
+        console.log(response.userName);
+    }*/
+    getUserInfo() : Observable<UserInfo>{
 
-          console.log(info);
-
-        });;
+        return this.httpClient.get<UserInfo>(this.auth_url + "userInfo");
     }
 }
