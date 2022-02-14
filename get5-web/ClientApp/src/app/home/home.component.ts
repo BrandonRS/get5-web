@@ -9,6 +9,6 @@ import { AuthService } from '../services/auth.services';
 
 export class HomeComponent {
 
-  constructor(private auth : AuthService){ auth.getUser()}
+  constructor(private auth : AuthService){  }
 
 }

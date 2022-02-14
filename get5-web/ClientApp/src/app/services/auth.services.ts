@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { UserInfo } from "./user_info";
 
 @Injectable({
     providedIn: 'root',
@@ -13,26 +14,21 @@ export class AuthService{
     getUser(){
         
         this.httpClient.get(this.auth_url + "username", {responseType: 'text'}).subscribe(response => {
-            
-            console.log(response);
+
+          //response is already string
+          return response;
         });
     }
 
     getUserInfo(){
 
         this.httpClient.get(this.auth_url + "userInfo", {responseType: 'json'}).subscribe(response=> {
-            
-            console.log(response);
+
+
+          let info: UserInfo = { username: Object.values(Object.values(response)[5]).toString().split(",").join("") } as UserInfo;
+
+          console.log(info);
+
         });;
-    }
-
-    logout(){
-
-        this.httpClient.get(this.auth_url +  "logout").subscribe(response => {});
-    }
-
-    isSignedIn(){
-
-        //return this.httpClient.get(this.auth_url + "username").subscribe() != "";
     }
 }
