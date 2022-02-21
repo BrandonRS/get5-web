@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: unless-stopped
+    build:
+      context: "."
+      dockerfile: ./Dockerfile
+    ports:
+      - "27017:27017"
+
+  mongo-express:
+    image: mongo 
+    build:
+      context: "."
+      dockerfile: ./Dockerfile
+    ports:
+      - "8081:8081"
