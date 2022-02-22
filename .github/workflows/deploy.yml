@@ -45,5 +45,6 @@ jobs:
           ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
           copy_stack_file: true
           pull_images_first: true
+          deploy_path: ~/get5-web
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
