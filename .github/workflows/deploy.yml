@@ -41,6 +41,7 @@ jobs:
         uses: sulthonzh/docker-remote-deployment-action@v0.1.2-beta
         with:
           remote_docker_host: ${{ secrets.REMOTE_DOCKER_HOST }}
+          remote_docker_port: ${{ secrets.REMOTE_DOCKER_PORT }}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
           copy_stack_file: true
