@@ -47,6 +47,7 @@ jobs:
           copy_stack_file: true
           pull_images_first: true
           deploy_path: ~/get5-web
+          args: up -d
           stack_file_name: docker-compose.yml
           keep_files: 5
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
