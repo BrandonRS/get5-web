@@ -37,10 +37,11 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
       -
-        name: Docker Compose Remote Deploy
-        uses: chaplyk/docker-compose-remote-action@v1.1
+        name: Docker Remote Deployment Action
+        uses: sulthonzh/docker-remote-deployment-action@v1
         with:
-          ssh_host: ${{ secrets.SSH_HOST }}
-          ssh_user: ${{ secrets.SSH_USER }}
-          ssh_key: ${{ secrets.SSH_KEY }}
-          pull: true
+          remote_docker_host: ${{ secrets.REMOTE_DOCKER_HOST }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
+          copy_stack_file: true
+          pull_images_first: true
