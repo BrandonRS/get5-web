@@ -48,5 +48,6 @@ jobs:
           pull_images_first: true
           deploy_path: ~/get5-web
           stack_file_name: docker-compose.yml
+          keep_files: 5
           docker_registry_username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           docker_registry_password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
