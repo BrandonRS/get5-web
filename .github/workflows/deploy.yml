@@ -44,4 +44,3 @@ jobs:
           ssh_user: ${{ secrets.SSH_USER }}
           ssh_key: ${{ secrets.SSH_KEY }}
           pull: true
-          

@@ -1,11 +1,13 @@
 services:
   get5-web:
-    image: get5-web
+    image: brandonrs/get5-web:develop
     build:
       context: "."
       dockerfile: ./Dockerfile
     ports:
-      - "8080:80"
+      - "5757:80"
+    restart: unless-stopped
 
   mongo:
     image: mongo
+    restart: unless-stopped
