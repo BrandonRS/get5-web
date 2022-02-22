@@ -38,7 +38,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
       -
         name: Docker Remote Deployment Action
-        uses: sulthonzh/docker-remote-deployment-action@v1
+        uses: sulthonzh/docker-remote-deployment-action@v0.1.2-beta
         with:
           remote_docker_host: ${{ secrets.REMOTE_DOCKER_HOST }}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
