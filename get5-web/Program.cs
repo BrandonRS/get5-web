@@ -1,6 +1,8 @@
 using AspNetCore.Authentication.CAS;
 using AspNetCore.Identity.Mongo;
+using get5_web.Interfaces.Authentication;
 using get5_web.Models.Authentication;
+using get5_web.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 
@@ -48,6 +50,8 @@ builder.Services
         steamOptions.CallbackPath = "/api/auth/signin-steam";
         steamOptions.SignInScheme = IdentityConstants.ExternalScheme;
     });
+
+builder.Services.AddSingleton<IAuthService, AuthService>();
 
 builder.Services.AddControllersWithViews();
 

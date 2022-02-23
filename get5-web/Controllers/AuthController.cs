@@ -1,4 +1,5 @@
 ﻿using AspNetCore.Authentication.CAS;
+using get5_web.Interfaces.Authentication;
 using get5_web.Models.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,12 +16,16 @@ namespace get5_web.Controllers
         private readonly ILogger<AuthController> _logger;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
+        private readonly IAuthService _authService;
 
-        public AuthController(ILogger<AuthController> logger, SignInManager<User> signInManager)
+        #region public
+
+        public AuthController(ILogger<AuthController> logger, SignInManager<User> signInManager, IAuthService authService)
         {
             _logger = logger;
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
+            _authService = authService;
         }
 
         [HttpGet("steam")]
@@ -41,7 +46,6 @@ namespace get5_web.Controllers
                 return RedirectToAction(nameof(SteamLogin));
             }
 
-            IdentityResult result;
             var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (signInResult.Succeeded)
                 return LocalRedirect(returnUrl ?? Url.Content("~/"));
@@ -53,8 +57,6 @@ namespace get5_web.Controllers
             {
                 return BadRequest("User is not allowed to sign in.");
             }
-
-            return BadRequest(/*result.Errors.FirstOrDefault()*/);
         }
 
         [HttpGet("umd")]
@@ -76,30 +78,31 @@ namespace get5_web.Controllers
                 return RedirectToAction(nameof(UmdLogin));
             }
 
-            IdentityResult result;
             var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (signInResult.Succeeded)
+            {
+                _logger.LogInformation("User '{username}' successfully signed in.", info.ProviderKey);
                 return LocalRedirect(returnUrl ?? Url.Content("~/"));
+            }
             else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
             {
-                var newUser = new User { UserName = info.ProviderKey };
-                result = await _userManager.CreateAsync(newUser);
-                if (result.Succeeded)
+                var newUser = await _authService.CreateUserWithLogin(info.ProviderKey, info);
+
+                if (newUser != null)
                 {
-                    result = await _userManager.AddLoginAsync(newUser, info);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(newUser, isPersistent: true);
-                        return LocalRedirect(returnUrl ?? Url.Content("~/"));
-                    }
+                    _logger.LogInformation("User '{username}' successfully signed in.", newUser.UserName);
+                    await _signInManager.SignInAsync(newUser, isPersistent: true);
+                    return LocalRedirect(returnUrl ?? Url.Content("~/"));
                 }
+                else
+                    return LocalRedirect("~/");
             }
             else
             {
-                return BadRequest("User is not allowed to sign in.");
+                _logger.LogError("Failed to log in user '{username}': User is not allowed to sign in ({message}).",
+                    info.ProviderKey, signInResult.ToString());
+                return LocalRedirect("~/");
             }
-
-            return BadRequest(result.Errors.FirstOrDefault());
         }
 
         [Authorize]
@@ -133,5 +136,7 @@ namespace get5_web.Controllers
             }
             return Ok(info);
         }
+
+        #endregion public
     }
 }
