@@ -12,6 +12,10 @@ export class NavMenuComponent {
     window.location.href = "/api/auth/umd";
   }
 
+  steamLogin() {
+    window.location.href = "/api/auth/steam";
+  }
+
   collapse() {
     this.isExpanded = false;
   }

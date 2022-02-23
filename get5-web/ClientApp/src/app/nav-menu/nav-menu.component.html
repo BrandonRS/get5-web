@@ -17,7 +17,7 @@
         class="navbar-collapse collapse d-sm-inline-flex justify-content-start"
         [ngClass]="{ show: isExpanded }"
       >
-        <ul class="navbar-nav flex-grow">
+        <ul class="navbar-nav me-auto">
           <li
             class="nav-item"
             [routerLinkActive]="['link-active']"
@@ -26,17 +26,11 @@
             <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
           </li>
         </ul>
-      </div>
-      <div>
-        <div>
-          <button 
-            class="btn btn-danger"
-            (click)="umdLogin()"
-            id="umdLogin"
-            > UMD CAS
-          </button>
+        <div class="btn-group">
+          <button class="btn btn-danger" (click)="umdLogin()" id="umdLogin">UMD</button>
+          <button class="btn btn-danger" (click)="steamLogin()" id="steamLogin">Steam</button>
         </div>
       </div>
     </div>
   </nav>
-</header> 
+</header>
