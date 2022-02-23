@@ -18,11 +18,6 @@ export class AuthService{
         return this.httpClient.get(this.auth_url + "username", {responseType: 'text'});
     }
 
-    /* Example extraction of data: .subscribe(response=> {
-
-
-        console.log(response.userName);
-    }*/
     getUserInfo() : Observable<UserInfo>{
 
         return this.httpClient.get<UserInfo>(this.auth_url + "userInfo");

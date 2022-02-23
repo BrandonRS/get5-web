@@ -6,18 +6,18 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Grab host and port
+// Grab mongo host and port
 var host = builder.Configuration.GetSection("MongoDb:Host").Value;
 var port = builder.Configuration.GetSection("MongoDb:Port").Value;
-var mongoConnectionString = $"mongodb://{host}:{port}";
+var databaseName = builder.Configuration.GetSection("MongoDb:Database").Value;
+var mongoConnectionString = $"mongodb://{host}:{port}/{databaseName}";
 
-// Create the connection string using the host and port values
+// Create the mongo connection string using the host and port values
 var mongoClient = new MongoClient(mongoConnectionString);
 var database = mongoClient.GetDatabase("get5");
-builder.Services.AddSingleton(database);
+builder.Services.AddSingleton(databaseName);
 
 // Add services to the container.
-
 builder.Services
     .AddIdentityMongoDbProvider<User>(options =>
     {

@@ -47,7 +47,6 @@ namespace get5_web.Controllers
                 return LocalRedirect(returnUrl ?? Url.Content("~/"));
             else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
             {
-                // Prompt user to link UMD account, or login as guest
                 return LocalRedirect("~/profile/newuser");
             }
             else
@@ -104,7 +103,7 @@ namespace get5_web.Controllers
         }
 
         [Authorize]
-        [HttpGet("logout")]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -128,7 +127,10 @@ namespace get5_web.Controllers
         public async Task<IActionResult> GetUserInfo()
         {
             var info = await _userManager.GetUserAsync(User);
-            if (info == null) { return NotFound(); }
+            if (info == null)
+            {
+                return NotFound();
+            }
             return Ok(info);
         }
     }
