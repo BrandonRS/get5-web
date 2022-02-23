@@ -55,7 +55,9 @@ namespace get5_web.Controllers
             }
             else
             {
-                return BadRequest("User is not allowed to sign in.");
+                _logger.LogError("Failed to log in user '{username}': User is not allowed to sign in ({message}).",
+                    info.ProviderKey, signInResult.ToString());
+                return LocalRedirect("~/");
             }
         }
 
@@ -110,7 +112,7 @@ namespace get5_web.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return LocalRedirect("~/");
+            return Ok();
         }
 
         [Authorize]
