@@ -3,7 +3,7 @@ services:
   mongo:
     image: mongo
     volumes:
-      -./data:/data/db
+      - ./data:/data/db
     restart: unless-stopped
     ports:
       - "27017:27017"
