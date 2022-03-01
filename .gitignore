@@ -231,3 +231,6 @@ _Pvt_Extensions
 .fake/
 
 .angular/
+
+# For docker-compose.develop.yml
+./data
