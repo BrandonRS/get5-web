@@ -1,6 +1,7 @@
 ﻿using get5_web.Interfaces.Authentication;
 using get5_web.Models.Authentication;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace get5_web.Services.Authentication
 {
@@ -16,6 +17,17 @@ namespace get5_web.Services.Authentication
             _signInManager = signInManager;
             _userManager = signInManager.UserManager;
         }
+
+        #region properties
+
+        private ClaimsPrincipal User
+        {
+            get => _signInManager.Context.User;
+        }
+
+        #endregion properties
+
+        #region public
 
         public async Task<User?> CreateUserWithLogin(string username, ExternalLoginInfo info)
         {
@@ -51,5 +63,11 @@ namespace get5_web.Services.Authentication
 
             return result.Succeeded;
         }
+
+        public bool IsSignedIn() => _signInManager.IsSignedIn(User);
+
+        public async Task<User> GetUserAsync() => await _userManager.GetUserAsync(User);
+
+        #endregion public
     }
 }

@@ -15,7 +15,6 @@ namespace get5_web.Controllers
 
         private readonly ILogger<AuthController> _logger;
         private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
 
         #region public
@@ -24,7 +23,6 @@ namespace get5_web.Controllers
         {
             _logger = logger;
             _signInManager = signInManager;
-            _userManager = signInManager.UserManager;
             _authService = authService;
         }
 
@@ -119,7 +117,7 @@ namespace get5_web.Controllers
         [HttpGet("username")]
         public IActionResult GetUserName()
         {
-            var name = _signInManager.Context.User?.Identity?.Name;
+            var name = User.Identity?.Name;
             if (name == null)
             {
                 return NotFound();
@@ -131,7 +129,7 @@ namespace get5_web.Controllers
         [HttpGet("userInfo")]
         public async Task<IActionResult> GetUserInfo()
         {
-            var info = await _userManager.GetUserAsync(User);
+            var info = await _authService.GetUserAsync();
             if (info == null)
             {
                 return NotFound();
