@@ -23,25 +23,33 @@ namespace get5_web.Services.Authentication
                 username, info.ProviderDisplayName);
 
             var newUser = new User { UserName = username };
-            var result = await _userManager.CreateAsync(newUser);
+            var result = false;
+            var identityResult = await _userManager.CreateAsync(newUser);
 
-            if (result.Succeeded)
+            if (identityResult.Succeeded)
             {
                 _logger.LogInformation("Successfully created user '{username}'.", username);
-                result = await _userManager.AddLoginAsync(newUser, info);
-
-                if (result.Succeeded)
-                    _logger.LogInformation("Successfully added login '{provider}' for user '{username}'.",
-                        info.ProviderDisplayName, username);
-                else
-                    _logger.LogError("Failed to add login '{provider}' for user '{username}': {message}",
-                        info.ProviderDisplayName, username, result.Errors.FirstOrDefault());
+                result = await AddLoginForUser(newUser, info);
             }
             else
                 _logger.LogError("Failed to create user with username '{username}': {message}.",
-                    username, result.Errors.FirstOrDefault());
+                    username, identityResult.Errors.FirstOrDefault());
 
-            return result.Succeeded ? newUser : null;
+            return result ? newUser : null;
+        }
+
+        public async Task<bool> AddLoginForUser(User user, ExternalLoginInfo info)
+        {
+            var result = await _userManager.AddLoginAsync(user, info);
+
+            if (result.Succeeded)
+                _logger.LogInformation("Successfully added login '{provider}' for user '{username}'.",
+                    info.ProviderDisplayName, user.UserName);
+            else
+                _logger.LogError("Failed to add login '{provider}' for user '{username}': {message}",
+                    info.ProviderDisplayName, user.UserName, result.Errors.FirstOrDefault());
+
+            return result.Succeeded;
         }
     }
 }

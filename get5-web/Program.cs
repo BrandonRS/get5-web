@@ -51,7 +51,7 @@ builder.Services
         steamOptions.SignInScheme = IdentityConstants.ExternalScheme;
     });
 
-builder.Services.AddSingleton<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllersWithViews();
 
