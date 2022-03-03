@@ -44,18 +44,42 @@ namespace get5_web.Controllers
                 return RedirectToAction(nameof(SteamLogin));
             }
 
-            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-            if (signInResult.Succeeded)
-                return LocalRedirect(returnUrl ?? Url.Content("~/"));
-            else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
+            if (_authService.IsSignedIn())
             {
-                return LocalRedirect("~/profile/newuser");
+                var hasSteam = await _authService.HasSteamLogin();
+
+                if (!hasSteam)
+                {
+                    var user = await _authService.GetUserAsync();
+                    await _authService.AddLoginForUser(user, info);
+                }
+
+                return LocalRedirect(returnUrl ?? Url.Content("~/"));
             }
             else
             {
-                _logger.LogError("Failed to log in user '{username}': User is not allowed to sign in ({message}).",
-                    info.ProviderKey, signInResult.ToString());
-                return LocalRedirect("~/");
+                var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+                if (signInResult.Succeeded)
+                    return LocalRedirect(returnUrl ?? Url.Content("~/"));
+                else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
+                {
+                    var newUser = await _authService.CreateSteamUserWithLogin(info);
+
+                    if (newUser != null)
+                    {
+                        _logger.LogInformation("User '{username}' successfully signed in.", newUser.UserName);
+                        await _signInManager.SignInAsync(newUser, isPersistent: true);
+                        return LocalRedirect("~/profile/newuser");
+                    }
+                    else
+                        return LocalRedirect("~/");
+                }
+                else
+                {
+                    _logger.LogError("Failed to log in user '{username}': User is not allowed to sign in ({message}).",
+                        info.ProviderKey, signInResult.ToString());
+                    return LocalRedirect("~/");
+                }
             }
         }
 
@@ -78,30 +102,44 @@ namespace get5_web.Controllers
                 return RedirectToAction(nameof(UmdLogin));
             }
 
-            var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-            if (signInResult.Succeeded)
+            if (_authService.IsSignedIn())
             {
-                _logger.LogInformation("User '{username}' successfully signed in.", info.ProviderKey);
-                return LocalRedirect(returnUrl ?? Url.Content("~/"));
-            }
-            else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
-            {
-                var newUser = await _authService.CreateUserWithLogin(info.ProviderKey, info);
+                var hasUmd = await _authService.HasUmdLogin();
 
-                if (newUser != null)
+                if (!hasUmd)
                 {
-                    _logger.LogInformation("User '{username}' successfully signed in.", newUser.UserName);
-                    await _signInManager.SignInAsync(newUser, isPersistent: true);
-                    return LocalRedirect(returnUrl ?? Url.Content("~/"));
+                    await _authService.AddUmdLoginForUser(await _authService.GetUserAsync(), info);
                 }
-                else
-                    return LocalRedirect("~/");
+
+                return LocalRedirect(returnUrl ?? Url.Content("~/"));
             }
             else
             {
-                _logger.LogError("Failed to log in user '{username}': User is not allowed to sign in ({message}).",
-                    info.ProviderKey, signInResult.ToString());
-                return LocalRedirect("~/");
+                var signInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+                if (signInResult.Succeeded)
+                {
+                    _logger.LogInformation("User '{username}' successfully signed in.", info.ProviderKey);
+                    return LocalRedirect(returnUrl ?? Url.Content("~/"));
+                }
+                else if (!signInResult.IsNotAllowed && !signInResult.IsLockedOut)
+                {
+                    var newUser = await _authService.CreateUserWithLogin(info.ProviderKey, info);
+
+                    if (newUser != null)
+                    {
+                        _logger.LogInformation("User '{username}' successfully signed in.", newUser.UserName);
+                        await _signInManager.SignInAsync(newUser, isPersistent: true);
+                        return LocalRedirect(returnUrl ?? Url.Content("~/"));
+                    }
+                    else
+                        return LocalRedirect("~/");
+                }
+                else
+                {
+                    _logger.LogError("Failed to log in user '{username}': User is not allowed to sign in ({message}).",
+                        info.ProviderKey, signInResult.ToString());
+                    return LocalRedirect("~/");
+                }
             }
         }
 

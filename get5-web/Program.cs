@@ -5,6 +5,7 @@ using get5_web.Models.Authentication;
 using get5_web.Services.Authentication;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
+using SteamWebAPI2.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,12 @@ var mongoClient = new MongoClient(mongoConnectionString);
 var database = mongoClient.GetDatabase("get5");
 builder.Services.AddSingleton(databaseName);
 
-// Add services to the container.
+// Add SteamWebAPI service
+var steamApiKey = builder.Configuration.GetSection("Steam:APIKey").Value;
+var webInterfaceFactory = new SteamWebInterfaceFactory(steamApiKey);
+builder.Services.AddSingleton(webInterfaceFactory);
+
+// Add authentication
 builder.Services
     .AddIdentityMongoDbProvider<User>(options =>
     {
@@ -51,6 +57,7 @@ builder.Services
         steamOptions.SignInScheme = IdentityConstants.ExternalScheme;
     });
 
+// Project services
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllersWithViews();

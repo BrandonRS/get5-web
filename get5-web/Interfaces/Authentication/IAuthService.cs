@@ -12,5 +12,13 @@ namespace get5_web.Interfaces.Authentication
         bool IsSignedIn();
 
         Task<User> GetUserAsync();
+
+        Task<bool> HasSteamLogin();
+
+        Task<bool> HasUmdLogin();
+
+        Task<bool> AddUmdLoginForUser(User user, ExternalLoginInfo info);
+
+        Task<User?> CreateSteamUserWithLogin(ExternalLoginInfo info);
     }
 }
